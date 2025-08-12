@@ -71,7 +71,7 @@ spec:
   # This is nothing but PVC, you can directly create here
   volumeClaimTemplates:
   - metadata:
-      name: mongodb-data 
+      name: redis-data 
     spec:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: "roboshop-ebs"
