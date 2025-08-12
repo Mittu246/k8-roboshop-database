@@ -59,7 +59,7 @@ spec:
     spec:
       containers:
       - name: mongodb
-        image: srikesh7117/mongodb:v1
+        image: joindevops/mongodb:v1
         volumeMounts:
         - name: www
           mountPath: /data/db
