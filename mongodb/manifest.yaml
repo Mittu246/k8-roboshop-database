@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-headless
+  labels:
+    purpose: statefulset
+    project: roboshop
+    app: mongodb
+spec:
+  clusterIP: None
+  selector:
+    purpose: statefulset
+    project: roboshop
+    app: mongodb
+  ports: 
+  - protocol: TCP
+    port: 27017
+    targetport: 27017
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  labels:
+    purpose: statefulset
+    project: roboshop
+    app: mongodb
+spec:
+  selector:
+    purpose: statefulset
+    project: roboshop
+    app: mongodb
+  ports:
+  - protocol: TCP
+    port: 27017
+    targetport: 27017
+--- 
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+spec:
+  selector:
+    matchLabels:
+      purpose: statefulset
+      project: roboshop
+      app: mongodb
+  serviceName: "mongodb-headless" # this should be headless svc
+  replicas: 3 # by default is 1
+  template:
+    metadata:
+      labels:
+        purpose: statefulset
+        project: roboshop
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: srikesh7117/mongodb:v1
+        volumeMounts:
+        - name: www
+          mountPath: /data/db
+  volumeClaimTemplates:
+  - metadata:
+      name: mongodb-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "roboshop-ebs"
+      resources:
+        requests:
+          storage: 2Gi
